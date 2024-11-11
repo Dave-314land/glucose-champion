@@ -1,9 +1,7 @@
 """ main """
-import datetime
-
 from fastapi import FastAPI
-from pydantic import BaseModel
-
+from models.glucose_reading import GlucoseReading
+from models.insulin_entry import InsulinEntry
 
 
 app = FastAPI()
@@ -12,18 +10,6 @@ app = FastAPI()
 def welcome():
     """ Defines the home page """
     return { "Hello and welcome to Glucose Champion!" }
-
-class GlucoseReading(BaseModel):
-    """ Defines glucose readings """
-    timestamp: datetime.datetime
-    value: float
-
-
-class InsulinEntry(BaseModel):
-    """ Defines insulin entries """
-    timestamp: datetime.datetime
-    amount: float
-
 
 # Sample data store (replace with actual database integration later)
 glucose_readings = []
@@ -40,7 +26,7 @@ def create_glucose_reading(reading: GlucoseReading):
     glucose_readings.append(reading.dict())
     return reading
 
-@app.get("api/insulin")
+@app.get("/api/insulin")
 def get_insulin_entries():
     """ Gets insulin entries """
     return insulin_entries

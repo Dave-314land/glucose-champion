@@ -3,3 +3,5 @@ frontend/package-lock.json
 
 
 backend/python/venv/
+backend/python/__pycache__/
+backend/python/models/__pycache__/
