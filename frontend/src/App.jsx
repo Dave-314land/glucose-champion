@@ -6,15 +6,19 @@ import './App.css'
 
 function App() {
   const [glucoseReadings, setGlucoseReadings] = useState([]);
-  const [insulinEntries, setInsulinEntries] = useState([]);
 
   useEffect(() => {
     const fetchData = async () => {
-      const glucoseResponse = await fetch('/api/glucose');
-      setGlucoseReadings(await glucoseResponse.json());
-
-      const insulinEntries = await fetch('/api/insulin');
-      setInsulinEntries(await insulinEntries.json());
+      try {
+        const glucoseResponse = await fetch('http://localhost:8000/api/glucose');
+        if (!glucoseResponse.ok) {
+          throw new Error(`Error fetching glucose data: ${glucoseResponse.status}`);
+        }
+        const glucoseData = await glucoseResponse.json();
+        setGlucoseReadings(glucoseData);
+      } catch (error) {
+        console.error('Error fetching data:', error);
+      }
     };
     fetchData();
   }, []);
@@ -37,26 +41,6 @@ function App() {
             <Legend />
             <Line type="monotone" dataKey="value" stroke="#8884d8" />
           </LineChart>
-        </div>
-
-        <div>
-          <h2 className="text-xl font-medium mb-4">Insulin Entries</h2>
-          <table className="w-full border-collapse">
-            <thead>
-              <tr>
-                <th className="p-2 border text-left">Timestamp</th>
-                <th className="p-2 border text-right">Amount</th>
-              </tr>
-            </thead>
-            <tbody>
-              {insulinEntries.map((entry, index) => {
-                <tr key={index}>
-                  <td className="p-2 border">{formatTimestamp(entry.timestamp)}</td>
-                  <td className="p-2 border text-right">{entry.amount} units</td>
-                </tr>
-              })}
-            </tbody>
-          </table>
         </div>
       </CardContent>
     </Card>

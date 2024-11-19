@@ -1,10 +1,23 @@
 """ main """
 from fastapi import FastAPI, status
+from fastapi.middleware.cors import CORSMiddleware
 from app.models.glucose_reading import GlucoseReading
-from app.models.insulin_entry import InsulinEntry
 
 
 app = FastAPI()
+
+origins = [
+    "http://localhost",
+    "http://localhost:5173",
+]
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 @app.get("/", status_code=status.HTTP_200_OK)
 async def welcome():
@@ -12,8 +25,7 @@ async def welcome():
     return { "message": "Hello and welcome to Glucose Champion!" }
 
 # Sample data store (replace with actual database integration later)
-glucose_readings = []
-insulin_entries = []
+glucose_readings = [{"id": 1, "timestamp": "2024-10-30 10:25.30", "value": 189.0}]
 
 @app.get("/api/glucose", status_code=status.HTTP_200_OK)
 def get_glucose_readings():
@@ -25,14 +37,3 @@ def create_glucose_reading(reading: GlucoseReading):
     """ Creates a glucose reading """
     glucose_readings.append(reading.dict())
     return reading
-
-@app.get("/api/insulin", status_code=status.HTTP_200_OK)
-def get_insulin_entries():
-    """ Gets insulin entries """
-    return insulin_entries
-
-@app.post("/api/insulin", status_code=status.HTTP_201_CREATED)
-def create_insulin_entry(entry: InsulinEntry):
-    """ Creates an insulin entry """
-    insulin_entries.append(entry.dict())
-    return entry
