@@ -1,8 +1,9 @@
 import { useState, useEffect } from 'react';
-import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card"
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import dayjs from 'dayjs';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend } from 'recharts';
 import './App.css'
+import GlucoseEntryForm from './components/forms/GlucoseEntryForm';
 
 function App() {
   const [glucoseReadings, setGlucoseReadings] = useState([]);
@@ -26,24 +27,37 @@ function App() {
   const formatTimestamp = (timestamp) => dayjs(timestamp).format('YYYY-MM-DD HH:mm')
 
   return (
-    <Card className="w-full max-w-4xl">
-      <CardHeader>
-        <CardTitle>Glucose Tracker</CardTitle>
-      </CardHeader>
-      <CardContent>
-        <div className="mb-8">
-          <h2 className="text-xl font-medium mb-4">Glucose Readings</h2>
-          <LineChart width={600} height={400} data={glucoseReadings}>
-            <XAxis dataKey="timestamp" tickFormatter={formatTimestamp} />
-            <YAxis />
-            <CartesianGrid strokeDasharray="3 3" />
-            <Tooltip />
-            <Legend />
-            <Line type="monotone" dataKey="value" stroke="#8884d8" />
-          </LineChart>
-        </div>
-      </CardContent>
-    </Card>
+    <div>
+      <Card className="w-full max-w-4xl">
+        <CardHeader>
+          <CardTitle>Glucose Readings</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="mb-8">
+            <LineChart width={600} height={400} data={glucoseReadings}>
+              <XAxis dataKey="timestamp" tickFormatter={formatTimestamp} />
+              <YAxis />
+              <CartesianGrid strokeDasharray="3 3" />
+              <Tooltip />
+              <Legend />
+              <Line type="monotone" dataKey="value" stroke="#8884d8" />
+            </LineChart>
+          </div>
+        </CardContent>
+      </Card>
+
+      <div className="my-5">
+      <Card className="text-left">
+        <CardHeader>
+          <CardTitle className="text-center">Glucose Entry</CardTitle>
+          <CardDescription>Enter your Glucose reading below, along with the date and time of the reading.</CardDescription>
+        </CardHeader>
+        <CardContent>
+        <GlucoseEntryForm />
+        </CardContent>
+      </Card>
+      </div>      
+    </div>
   );
 };
 
